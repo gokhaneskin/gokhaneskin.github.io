@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gökhan Eskin — AI Öğrenme Yolculuğu</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8eaf0;
+    --muted: #8b90a0;
+    --accent: #4f8ef7;
+    --accent2: #34c98b;
+    --accent3: #f7944f;
+    --accent4: #a78bfa;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .hero {
+    padding: 80px 24px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 700;
+    margin: 0 auto 24px;
+    color: white;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(90deg, #4f8ef7, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero .subtitle {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 520px;
+    margin: 0 auto 32px;
+  }
+
+  .tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .tag.blue { border-color: rgba(79,142,247,0.3); color: #4f8ef7; background: rgba(79,142,247,0.08); }
+  .tag.green { border-color: rgba(52,201,139,0.3); color: #34c98b; background: rgba(52,201,139,0.08); }
+  .tag.orange { border-color: rgba(247,148,79,0.3); color: #f7944f; background: rgba(247,148,79,0.08); }
+  .tag.purple { border-color: rgba(167,139,250,0.3); color: #a78bfa; background: rgba(167,139,250,0.08); }
+
+  .section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .card .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    margin-top: 12px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .status.done { background: rgba(52,201,139,0.1); color: #34c98b; }
+  .status.wip { background: rgba(247,148,79,0.1); color: #f7944f; }
+  .status.soon { background: rgba(139,144,160,0.1); color: var(--muted); }
+
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 6px; bottom: 6px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -20px; top: 6px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-item.done::before { background: var(--accent2); }
+  .timeline-item.wip::before { background: var(--accent3); }
+
+  .timeline-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .timeline-item p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 12px;
+  }
+
+  .project-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .project-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .tech-stack {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+
+  .tech {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+
+  .stat .num {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat .label {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="avatar">GE</div>
+  <h1>Gökhan Eskin<br><span>AI Öğrenme Yolculuğu</span></h1>
+  <p class="subtitle">Java / Spring Boot geliştirici. Yapay zeka teknolojilerini öğreniyor ve iş süreçlerine entegre ediyor.</p>
+  <div class="tags">
+    <span class="tag blue">Java</span>
+    <span class="tag blue">Spring Boot</span>
+    <span class="tag green">Spring AI</span>
+    <span class="tag green">RAG</span>
+    <span class="tag orange">n8n</span>
+    <span class="tag orange">GitHub Copilot</span>
+    <span class="tag purple">MCP</span>
+    <span class="tag purple">Ollama</span>
+    <span class="tag">Docker</span>
+    <span class="tag">Kubernetes</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="stats">
+    <div class="stat">
+      <div class="num" style="color: #4f8ef7;">7+</div>
+      <div class="label">Yıl Java deneyimi</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: #34c98b;">5</div>
+      <div class="label">AI kavramı öğrenildi</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: #f7944f;">2</div>
+      <div class="label">Proje geliştirildi</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: #a78bfa;">∞</div>
+      <div class="label">Öğrenme devam ediyor</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Öğrenilen Kavramlar</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon" style="background: rgba(79,142,247,0.1);">🧠</div>
+      <h3>LLM Temelleri</h3>
+      <p>Token, context window, hallucination. LLM'in tahmin ettiğini, araştırmadığını anlamak.</p>
+      <span class="status done"><span class="dot"></span> Tamamlandı</span>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background: rgba(52,201,139,0.1);">🔍</div>
+      <h3>RAG</h3>
+      <p>Retrieval Augmented Generation. Şirket dokümanlarını LLM'e entegre etme yöntemi.</p>
+      <span class="status done"><span class="dot"></span> Tamamlandı</span>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background: rgba(167,139,250,0.1);">📐</div>
+      <h3>Embedding & Vector DB</h3>
+      <p>Metni anlamsal koordinata dönüştürme. Semantik arama altyapısı.</p>
+      <span class="status done"><span class="dot"></span> Tamamlandı</span>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background: rgba(247,148,79,0.1);">🤖</div>
+      <h3>AI Agent</h3>
+      <p>Kendi kendine karar veren AI sistemi. Beyin + Araçlar + Hafıza mimarisi.</p>
+      <span class="status done"><span class="dot"></span> Tamamlandı</span>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background: rgba(79,142,247,0.1);">🔌</div>
+      <h3>MCP</h3>
+      <p>Model Context Protocol. Sistemleri AI'a standart şekilde bağlayan Anthropic protokolü.</p>
+      <span class="status done"><span class="dot"></span> Tamamlandı</span>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background: rgba(52,201,139,0.1);">✍️</div>
+      <h3>Prompt Engineering</h3>
+      <p>5 soru çerçevesi: Kim, Ne, Neden, Sınır, Nasıl. Chain of thought, negatif prompt.</p>
+      <span class="status done"><span class="dot"></span> Tamamlandı</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Projeler</div>
+
+  <div class="project-card">
+    <h3>🏥 Sigorta AI Servisi</h3>
+    <p>Spring AI + Ollama ile poliçe dokümanları üzerine soru-cevap sistemi. RAG mimarisi, conversation memory, PDF okuma.</p>
+    <div class="tech-stack">
+      <span class="tech">Spring Boot 3.3</span>
+      <span class="tech">Spring AI 1.0.0</span>
+      <span class="tech">Ollama / llama3.2</span>
+      <span class="tech">RAG</span>
+      <span class="tech">PDF Reader</span>
+      <span class="tech">Chat Memory</span>
+    </div>
+  </div>
+
+  <div class="project-card">
+    <h3>⚡ n8n Otomasyon Akışları</h3>
+    <p>Schedule Trigger, HTTP Request, veri dönüştürme ve IF node ile koşullu otomasyon akışları.</p>
+    <div class="tech-stack">
+      <span class="tech">n8n</span>
+      <span class="tech">Docker</span>
+      <span class="tech">Schedule Trigger</span>
+      <span class="tech">HTTP Request</span>
+      <span class="tech">IF Node</span>
+    </div>
+  </div>
+
+  <div class="project-card" style="border-color: rgba(247,148,79,0.2);">
+    <h3>🔧 Bitbucket MCP Server <span style="font-size:12px; color: #f7944f; font-weight:400;">(geliştiriliyor)</span></h3>
+    <p>Spring Boot ile Bitbucket/Stash MCP Server. PR açma, merge etme, review işlemlerini AI üzerinden yönetme.</p>
+    <div class="tech-stack">
+      <span class="tech">Spring Boot</span>
+      <span class="tech">MCP Protocol</span>
+      <span class="tech">Bitbucket REST API</span>
+      <span class="tech">Claude / Copilot</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Öğrenme Yol Haritası</div>
+  <div class="timeline">
+    <div class="timeline-item done">
+      <h4>AI Temelleri</h4>
+      <p>LLM, RAG, Embedding, Agent, MCP kavramları</p>
+    </div>
+    <div class="timeline-item done">
+      <h4>GitHub Copilot Uzmanlığı</h4>
+      <p>Prompt engineering, unit test, code review teknikleri</p>
+    </div>
+    <div class="timeline-item done">
+      <h4>Spring AI ile RAG Sistemi</h4>
+      <p>Ollama entegrasyonu, PDF reader, conversation memory</p>
+    </div>
+    <div class="timeline-item done">
+      <h4>n8n Otomasyon</h4>
+      <p>Trigger, HTTP Request, IF node, akış tasarımı</p>
+    </div>
+    <div class="timeline-item wip">
+      <h4>MCP Server Geliştirme</h4>
+      <p>Bitbucket operasyonlarını AI'a açmak</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Vector Database</h4>
+      <p>pgvector ile gerçek RAG altyapısı</p>
+    </div>
+    <div class="timeline-item">
+      <h4>AI Agent Mimarisi</h4>
+      <p>Multi-agent sistemler, tool calling</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Gökhan Eskin &mdash; Java / Spring Boot Geliştirici</p>
+  <p style="margin-top: 6px;">Bu sayfa AI öğrenme yolculuğunu belgeler. Her gün biraz daha ileri.</p>
+</footer>
+
+</body>
+</html>
